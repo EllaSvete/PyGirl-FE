@@ -57,11 +57,11 @@ def render_game_info(id_, prompt, unsolved_word, incorrect_guesses, tries_left):
     pyscript.write("tries-left", tries_left)
     snake_texts = [
             "",
-            "xxxx -=: xxxxx \n",
+            "xxxx -=: xxxxx<br>",
             """        ________
-                \nxxxx -=:___________  xxxxx \n""",
+                \nxxxx -=:___________  xxxxx """,
             """         ________/   /
-                \nxxxx -=:___________/ xxxxx \n""",
+                \nxxxx -=:___________/ xxxxx """,
             """
                     \\
                         \    /
@@ -84,22 +84,26 @@ def render_game_info(id_, prompt, unsolved_word, incorrect_guesses, tries_left):
         ]
     
     error_count = 6 - tries_left
-    
     snake_message = snake_texts[error_count]
+  
+    # if tries_left == 6:
+    #   return snake_texts[0] 
+    # if tries_left == 5:
+    #   return snake_texts[1]
+    # if tries_left == 4:
+    #   return snake_texts[2] 
+    # if tries_left == 3:
+    #   return snake_texts[3]
+    # if tries_left == 2:
+    #   return snake_texts[4] 
+    # if tries_left == 1:
+    #   return snake_texts[5]
+    # if tries_left == 0:
+    #   return snake_texts[6]
 
     pyscript.write("snake_images", snake_message)
 
 
-       
-
-       
-def get_incorrect_count(id_, used_letters):
-        word = words[id_]
-        counter = 0
-        for letter in used_letters:
-            if not letter in word:
-                counter += 1
-        return counter
 
 def render_buttons(guesses):
     """

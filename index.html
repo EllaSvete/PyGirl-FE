@@ -5,16 +5,17 @@
     <link rel="stylesheet" href="https://pyscript.net/alpha/pyscript.css" />
     <script defer src="https://pyscript.net/alpha/pyscript.js"></script>
   </head>
-  <body>
+  <body style="margin: 100px;text-align: center; background-image: linear-gradient(to right top, #eae593, #a9e3a9, #76dac9, #6ccade, #89b5dc);">
 
   <section>
-    <h1>Game <span id="game-id"></h1>
+    <h1 style="color:white;">Game <span id="game-id"></h1>
       <p id="prompt">
       <p id="unsolved-word">
       <p> Incorrect Guesses: <span id="incorrect-guesses"></p>
       <p> Incorrect Guesses Left: <span id ="tries-left"></p>
   </section>
   <div id="snake_images"></div>
+  <br>
   <section id="letter-buttons" pys-onClick="clickHandler">
     <p id="button_row1"></p>
     <p id="button_row2"></p>
