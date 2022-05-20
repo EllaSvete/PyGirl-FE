@@ -60,10 +60,12 @@ def render_game_info(id_, prompt, unsolved_word, incorrect_guesses, tries_left):
         """<pre>
 xxxx -=: xxxxx
 </pre>""",
-        """<pre>________
+        """<pre>
+                ________
         xxxx -=:___________  xxxxx
 </pre>""",
-        """<pre>________/   /
+        """<pre>
+                ________/   /
         xxxx -=:___________/ xxxxx
 </pre>""",
         """<pre>
@@ -72,14 +74,16 @@ xxxx -=: xxxxx
         ________/   /
 xxxx -=:___________/ xxxxx
 </pre>""",
-        """<pre>_____
+        """<pre>
+                _____
                /  0 0 \\
                \
                 \    /
         ________/   /
 xxxx -=:___________/ xxxxx
 </pre>""",
-        """<pre>_____
+        """<pre>
+                _____
                /  0 0 \\
                \    --------<
                 \    /
