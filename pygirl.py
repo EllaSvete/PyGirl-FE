@@ -11,6 +11,7 @@ url = "https://text-of-fortune.vercel.app/api/tof"
 # url = "http://localhost:3000/api/tof"
 
 game_data = None  # fetch this data from back end
+game_over = False
 
 prompts = {
     "start": "Guess a letter to solve the word",
@@ -22,7 +23,7 @@ prompts = {
 
 
 async def fetch_game_data(query_string=""):
-    global game_data
+    global game_data, game_over
 
     # ?id = 1 & guess = f & guesses = xy
     response = await pyfetch(url=url + query_string, method="GET")
@@ -33,6 +34,8 @@ async def fetch_game_data(query_string=""):
     unsolved_word = game_data["working_word"]
     status = game_data["status"]
     guesses = game_data["guesses"]
+    if status == "victory" or status == "defeat":
+        game_over = True
 
     prompt = prompts[status]
 
@@ -42,17 +45,12 @@ async def fetch_game_data(query_string=""):
             incorrect_guesses += guess
 
     tries_left = 6 - len(incorrect_guesses)
-    # if zero stop game and restart
-    if tries_left == 0:
-        # game is over
-        prompt = prompts["defeat"]
-        render_game_over(id_, prompt)
-    else:
-        incorrect_guesses = incorrect_guesses or "***"
 
-        render_game_info(id_, prompt, unsolved_word, incorrect_guesses, tries_left)
+    incorrect_guesses = incorrect_guesses or "***"
 
-        render_buttons(guesses)
+    render_game_info(id_, prompt, unsolved_word, incorrect_guesses, tries_left)
+
+    render_buttons(guesses)
 
 
 def render_game_over(id_, prompt):
@@ -172,14 +170,13 @@ def render_buttons(guesses):
 
 
 async def clickHandler(event):
+    if game_over:
+        return
     id_ = game_data["id"]
     guess = event.target.textContent  # a or b or z
     guesses = game_data["guesses"]
     guess = guess.lower()
     query_params = f"?id={id_}&guess={guess}&guesses={guesses}"
-    game_over = True
-    if game_over:
-        return
 
     await fetch_game_data(query_params)
 
