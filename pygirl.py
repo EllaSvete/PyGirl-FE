@@ -9,14 +9,14 @@ pyscript = pyscript  # wierd, but gets rid of many linter warnings
 url = "https://text-of-fortune.vercel.app/api/tof"
 # url = "http://localhost:3000/api/tof"
 
-game_data = None # fetch this data from back end
+game_data = None  # fetch this data from back end
 
 prompts = {
     "start": "Guess a letter to solve the word",
     "incorrect": "Wrong!!! Guess Again",
     "correct": "Noice! Keep it up",
     "victory": "Congratulations",
-    "defeat": "You'll do better next time"
+    "defeat": "You'll do better next time",
 }
 
 
@@ -56,53 +56,52 @@ def render_game_info(id_, prompt, unsolved_word, incorrect_guesses, tries_left):
     pyscript.write("incorrect-guesses", incorrect_guesses)
     pyscript.write("tries-left", tries_left)
     snake_texts = [
-            "",
-            "xxxx -=: xxxxx<br>",
-            """        ________
-                \nxxxx -=:___________  xxxxx """,
-            """         ________/   /
-                \nxxxx -=:___________/ xxxxx """,
-            """
-                    \\
-                        \    /
-                ________/   /
-        xxxx -=:___________/ xxxxx""",
-            """        _____
-                    /  0 0 \\
-                    \\
-                        \    /
-                ________/   /
+        "",
+        """<pre>
+xxxx -=: xxxxx
+</pre>""",
+        """<pre>        ________
+        xxxx -=:___________  xxxxx
+</pre>""",
+        """<pre>         ________/   /
         xxxx -=:___________/ xxxxx
-        """,
-            """        _____
-                     /  0 0 \\
-                    \    --------<
-                        \    /
-                ________/   /
-        xxxx -=:___________/ xxxxx
-        """
-        ]
-    
+</pre>""",
+        """<pre>
+              \\
+                \    /
+        ________/   /
+xxxx -=:___________/ xxxxx
+</pre>""",
+        """<pre>        _____
+               /  0 0 \\
+               \
+                \    /
+        ________/   /
+xxxx -=:___________/ xxxxx
+</pre>""",
+        """<pre>        _____
+               /  0 0 \\
+               \    --------<
+                \    /
+        ________/   /
+xxxx -=:___________/ xxxxx <br>
+</pre>""",
+    ]
+
     error_count = 6 - tries_left
+
     snake_message = snake_texts[error_count]
-  
-    # if tries_left == 6:
-    #   return snake_texts[0] 
-    # if tries_left == 5:
-    #   return snake_texts[1]
-    # if tries_left == 4:
-    #   return snake_texts[2] 
-    # if tries_left == 3:
-    #   return snake_texts[3]
-    # if tries_left == 2:
-    #   return snake_texts[4] 
-    # if tries_left == 1:
-    #   return snake_texts[5]
-    # if tries_left == 0:
-    #   return snake_texts[6]
 
     pyscript.write("snake_images", snake_message)
 
+
+def get_incorrect_count(id_, used_letters):
+    word = words[id_]
+    counter = 0
+    for letter in used_letters:
+        if not letter in word:
+            counter += 1
+    return counter
 
 
 def render_buttons(guesses):
@@ -138,7 +137,7 @@ def render_buttons(guesses):
 
 async def clickHandler(event):
     id_ = game_data["id"]
-    guess = event.target.textContent # a or b or z
+    guess = event.target.textContent  # a or b or z
     guesses = game_data["guesses"]
     guess = guess.lower()
     query_params = f"?id={id_}&guess={guess}&guesses={guesses}"
