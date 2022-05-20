@@ -1,3 +1,4 @@
+from email import message
 from pyodide.http import pyfetch
 import asyncio
 import string
@@ -10,6 +11,7 @@ url = "https://text-of-fortune.vercel.app/api/tof"
 # url = "http://localhost:3000/api/tof"
 
 game_data = None  # fetch this data from back end
+game_over = False
 
 prompts = {
     "start": "Guess a letter to solve the word",
@@ -21,7 +23,7 @@ prompts = {
 
 
 async def fetch_game_data(query_string=""):
-    global game_data
+    global game_data, game_over
 
     # ?id = 1 & guess = f & guesses = xy
     response = await pyfetch(url=url + query_string, method="GET")
@@ -32,6 +34,8 @@ async def fetch_game_data(query_string=""):
     unsolved_word = game_data["working_word"]
     status = game_data["status"]
     guesses = game_data["guesses"]
+    if status == "victory" or status == "defeat":
+        game_over = True
 
     prompt = prompts[status]
 
@@ -49,6 +53,14 @@ async def fetch_game_data(query_string=""):
     render_buttons(guesses)
 
 
+def render_game_over(id_, prompt):
+    pyscript.write("game-id", "Game Over")
+    pyscript.write("prompt", prompt)
+    pyscript.write("unsolved-word", "Game Over")
+    pyscript.write("incorrect-guesses", "Game Over")
+    pyscript.write("tries-left", "Game Over")
+
+
 def render_game_info(id_, prompt, unsolved_word, incorrect_guesses, tries_left):
     pyscript.write("game-id", id_)
     pyscript.write("prompt", prompt)
@@ -57,8 +69,11 @@ def render_game_info(id_, prompt, unsolved_word, incorrect_guesses, tries_left):
     pyscript.write("tries-left", tries_left)
     snake_texts = [
         "",
-        """<pre>
+        """
+<pre>
+
 xxxx -=: xxxxx
+
 </pre>""",
         """<pre>
                 ________
@@ -68,27 +83,35 @@ xxxx -=: xxxxx
                 ________/   /
         xxxx -=:___________/ xxxxx
 </pre>""",
-        """<pre>
-              \\
+        """
+<pre>
+
+               \\
                 \    /
         ________/   /
 xxxx -=:___________/ xxxxx
+
 </pre>""",
+
         """<pre>
+
                 _____
                /  0 0 \\
-               \
+               \\
                 \    /
         ________/   /
 xxxx -=:___________/ xxxxx
+
 </pre>""",
+
         """<pre>
                 _____
                /  0 0 \\
                \    --------<
                 \    /
         ________/   /
-xxxx -=:___________/ xxxxx <br>
+xxxx -=:___________/ xxxxx
+
 </pre>""",
     ]
 
@@ -140,6 +163,8 @@ def render_buttons(guesses):
 
 
 async def clickHandler(event):
+    if game_over:
+        return
     id_ = game_data["id"]
     guess = event.target.textContent  # a or b or z
     guesses = game_data["guesses"]
