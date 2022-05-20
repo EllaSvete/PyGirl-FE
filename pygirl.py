@@ -7,7 +7,7 @@ import string
 
 pyscript = pyscript  # wierd, but gets rid of many linter warnings
 
-url = "https://text-of-fortune.vercel.app/api/tof"
+url = "https://pygirl-sigma.vercel.app/api/backend"
 # url = "http://localhost:3000/api/tof"
 
 game_data = None  # fetch this data from back end
